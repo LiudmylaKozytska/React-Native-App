@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { styles } from "../styles/RegistrationStyles";
 
-import { SumbitButton } from "../components/SubmitButton";
+import { SubmitButton } from "../components/SubmitButton";
 
 export const Registration = () => {
   return (
@@ -54,7 +54,7 @@ export const Registration = () => {
               <Text style={styles.showPasswordText}>Показать</Text>
             </TouchableOpacity>
           </View>
-          <SumbitButton title={"Зарегистрироваться"} />
+          <SubmitButton title={"Зарегистрироваться"} />
           <Text style={styles.registerText}>Уже есть аккаунт? Войти</Text>
         </View>
       </ImageBackground>

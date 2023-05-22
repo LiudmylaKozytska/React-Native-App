@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-export const SumbitButton = ({ title }) => {
+export const SubmitButton = ({ title }) => {
   return (
     <TouchableOpacity style={styles.button}>
       <Text style={styles.text}>{title}</Text>

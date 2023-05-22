@@ -3,18 +3,14 @@ import {
   View,
   ImageBackground,
   TextInput,
-  ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Alert,
 } from "react-native";
 
 import { styles } from "../styles/LoginStyles";
 
-import { SumbitButton } from "../components/SubmitButton";
+import { SubmitButton } from "../components/SubmitButton";
 
 export const LoginScreen = () => {
   return (
@@ -25,15 +21,21 @@ export const LoginScreen = () => {
       >
         <View style={styles.formContainer}>
           <Text style={styles.formTitle}>Войти</Text>
-          <View style={styles.inputBox}>
+          <KeyboardAvoidingView
+            style={styles.inputBox}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          >
             <TextInput
               style={styles.formInput}
               placeholderTextColor={"#BDBDBD"}
               keyboardType="email-address"
               placeholder="Адрес электронной почты"
             />
-          </View>
-          <View style={styles.inputBox}>
+          </KeyboardAvoidingView>
+          <KeyboardAvoidingView
+            style={styles.inputBox}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          >
             <TextInput
               style={styles.formPasswordInput}
               placeholderTextColor={"#BDBDBD"}
@@ -43,8 +45,8 @@ export const LoginScreen = () => {
             <TouchableOpacity style={styles.showPasswordContainer}>
               <Text style={styles.showPasswordText}>Показать</Text>
             </TouchableOpacity>
-          </View>
-          <SumbitButton title={"Войти"} />
+          </KeyboardAvoidingView>
+          <SubmitButton title={"Войти"} />
           <TouchableOpacity>
             <Text style={styles.loginText}>
               Нет аккаунта? Зарегистрироваться
