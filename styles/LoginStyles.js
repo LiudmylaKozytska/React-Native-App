@@ -1,7 +1,5 @@
 import { StyleSheet } from "react-native";
 
-// const font = require("../assets/fonts/RobotoRegular.ttf");
-
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -19,7 +17,6 @@ export const styles = StyleSheet.create({
     position: "relative",
 
     width: "100%",
-    height: 489,
     paddingRight: 16,
     paddingLeft: 16,
 
@@ -32,7 +29,6 @@ export const styles = StyleSheet.create({
   },
 
   formTitle: {
-    // fontFamily: { font },
     fontSize: 30,
     lineHeight: 35.16,
 
@@ -90,6 +86,7 @@ export const styles = StyleSheet.create({
     top: 0,
     right: 0,
   },
+
   showPasswordText: {
     fontSize: 16,
     padding: 16,
@@ -106,6 +103,8 @@ export const styles = StyleSheet.create({
   loginText: {
     fontSize: 16,
     lineHeight: 19,
+
+    marginBottom: 145,
 
     color: "#1B4371",
   },
