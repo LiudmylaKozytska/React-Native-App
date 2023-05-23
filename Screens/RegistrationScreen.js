@@ -11,16 +11,37 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { styles } from "../styles/RegistrationStyles";
 
 import { SubmitButton } from "../components/SubmitButton";
+import { styles } from "../styles/RegistrationStyles";
+
+const initialState = {
+  userName: "",
+  email: "",
+  password: "",
+};
 
 export const Registration = () => {
+  const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [isShowPassword, setIsShowPassword] = useState(true);
+  const [isFocusInput, setIsFocusInput] = useState({
+    userName: false,
+    email: false,
+    password: false,
+  });
 
   const handleSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+
+    console.log("User data:", state);
+
+    setState(initialState);
+  };
+
+  const handlePasswordVisibility = () => {
+    setIsShowPassword(!isShowPassword);
   };
 
   return (
@@ -57,34 +78,84 @@ export const Registration = () => {
               <Text style={styles.formTitle}>Регистрация</Text>
               <View style={styles.inputBox}>
                 <TextInput
-                  style={styles.formInput}
+                  style={{
+                    ...styles.formInput,
+                    borderColor: isFocusInput.userName ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocusInput.userName
+                      ? "#FFFFFF"
+                      : "#F6F6F6",
+                  }}
                   placeholderTextColor={"#BDBDBD"}
                   placeholder="Логин"
-                  onFocus={() => setIsShowKeyboard(true)}
+                  onFocus={() =>
+                    setIsFocusInput({ ...isFocusInput, userName: true })
+                  }
+                  onBlur={() =>
+                    setIsFocusInput({ ...isFocusInput, userName: false })
+                  }
+                  value={state.userName}
+                  onChangeText={(text) =>
+                    setState({ ...state, userName: text })
+                  }
                 />
               </View>
               <View style={styles.inputBox}>
                 <TextInput
-                  style={styles.formInput}
+                  style={{
+                    ...styles.formInput,
+                    borderColor: isFocusInput.email ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocusInput.email ? "#FFFFFF" : "#F6F6F6",
+                  }}
                   placeholderTextColor={"#BDBDBD"}
                   keyboardType="email-address"
                   placeholder="Адрес электронной почты"
-                  onFocus={() => setIsShowKeyboard(true)}
+                  onFocus={() =>
+                    setIsFocusInput({ ...isFocusInput, email: true })
+                  }
+                  onBlur={() =>
+                    setIsFocusInput({ ...isFocusInput, email: false })
+                  }
+                  value={state.email}
+                  onChangeText={(text) => setState({ ...state, email: text })}
                 />
               </View>
               <View style={styles.inputBox}>
                 <TextInput
-                  style={styles.formPasswordInput}
+                  style={{
+                    ...styles.formPasswordInput,
+                    borderColor: isFocusInput.password ? "#FF6C00" : "#E8E8E8",
+                    backgroundColor: isFocusInput.password
+                      ? "#FFFFFF"
+                      : "#F6F6F6",
+                  }}
                   placeholderTextColor={"#BDBDBD"}
                   textContentType="password"
                   placeholder="Пароль"
-                  onFocus={() => setIsShowKeyboard(true)}
+                  secureTextEntry={!isShowPassword}
+                  onFocus={() =>
+                    setIsFocusInput({ ...isFocusInput, password: true })
+                  }
+                  onBlur={() =>
+                    setIsFocusInput({ ...isFocusInput, password: false })
+                  }
+                  value={state.password}
+                  onChangeText={(text) =>
+                    setState({ ...state, password: text })
+                  }
                 />
-                <TouchableOpacity style={styles.showPasswordContainer}>
-                  <Text style={styles.showPasswordText}>Показать</Text>
+                <TouchableOpacity
+                  style={styles.showPasswordContainer}
+                  onPress={handlePasswordVisibility}
+                >
+                  <Text style={styles.showPasswordText}>
+                    {isShowPassword ? "Скрыть" : "Показать"}
+                  </Text>
                 </TouchableOpacity>
               </View>
-              <SubmitButton title={"Зарегистрироваться"} />
+              <SubmitButton
+                onPress={handleSubmit}
+                title={"Зарегистрироваться"}
+              />
               <Text style={styles.registerText}>Уже есть аккаунт? Войти</Text>
             </View>
           </KeyboardAvoidingView>
