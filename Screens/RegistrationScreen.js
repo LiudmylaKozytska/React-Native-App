@@ -21,7 +21,7 @@ const initialState = {
   password: "",
 };
 
-export const Registration = () => {
+export const RegistrationScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
@@ -148,7 +148,7 @@ export const Registration = () => {
                   onPress={handlePasswordVisibility}
                 >
                   <Text style={styles.showPasswordText}>
-                    {isShowPassword ? "Скрыть" : "Показать"}
+                    {!isShowPassword ? "Показать" : "Скрыть"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -156,7 +156,12 @@ export const Registration = () => {
                 onPress={handleSubmit}
                 title={"Зарегистрироваться"}
               />
-              <Text style={styles.registerText}>Уже есть аккаунт? Войти</Text>
+              <Text
+                style={styles.registerText}
+                onPress={() => navigation.navigate("Login")}
+              >
+                Уже есть аккаунт? Войти
+              </Text>
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>

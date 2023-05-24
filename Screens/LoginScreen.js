@@ -20,7 +20,7 @@ const initialState = {
   password: "",
 };
 
-export const LoginScreen = () => {
+export const LoginScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
@@ -123,7 +123,9 @@ export const LoginScreen = () => {
                 </TouchableOpacity>
               </View>
               <SubmitButton title={"Войти"} onPress={handleSubmit} />
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Registration")}
+              >
                 <Text style={styles.loginText}>
                   Нет аккаунта? Зарегистрироваться
                 </Text>
