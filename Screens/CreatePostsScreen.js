@@ -9,14 +9,32 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import { Camera } from "expo-camera";
 
 import { styles } from "../styles/CreatePostStyles";
 
-import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Feather, FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
 
 export const CreatePostScreen = () => {
+  const navigation = useNavigation();
+
   const cameraRef = React.createRef();
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          style={{ marginLeft: 10 }}
+          onPress={() => navigation.goBack()}
+        >
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <KeyboardAvoidingView
@@ -70,7 +88,9 @@ export const CreatePostScreen = () => {
         <TouchableOpacity
           style={styles.button}
           activeOpacity={0.8}
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate("Публикации");
+          }}
         >
           <Text style={styles.buttonText}>Опубликовать</Text>
         </TouchableOpacity>

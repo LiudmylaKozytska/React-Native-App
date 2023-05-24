@@ -1,8 +1,28 @@
+import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { styles } from "../styles/PostsStyles";
 
 export const PostsScreen = () => {
+  const navigation = useNavigation();
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ marginRight: 10 }}>
+          <Feather
+            name="log-out"
+            size={24}
+            color="#BDBDBD"
+            onPress={() => navigation.navigate("Login")}
+          />
+        </View>
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
@@ -25,20 +45,25 @@ export const PostsScreen = () => {
         </View>
         <View style={styles.box}>
           <View style={styles.commentWrapper}>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Comments");
+              }}
+            >
               <Feather name="message-circle" size={24} color="#BDBDBD" />
             </TouchableOpacity>
             <Text style={styles.commentsCount}>0</Text>
           </View>
 
-          <View style={styles.wrapperLocation}>
-            <TouchableOpacity onPress={() => {}}>
-              <Ionicons name="location-outline" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}}>
-              <Text style={styles.locationName}>Location</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.wrapperLocation}
+            onPress={() => {
+              navigation.navigate("Map");
+            }}
+          >
+            <Ionicons name="location-outline" size={24} color="#BDBDBD" />
+            <Text style={styles.locationName}>Location</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

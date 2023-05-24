@@ -5,12 +5,15 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons, FontAwesome, Feather } from "@expo/vector-icons";
 
 import { styles } from "../styles/ProfileStyles";
 
 export const ProfileScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -19,7 +22,10 @@ export const ProfileScreen = () => {
       >
         <View style={styles.wrapper}>
           <View style={styles.userInfo}>
-            <TouchableOpacity style={styles.logOutBtn} onPress={() => {}}>
+            <TouchableOpacity
+              style={styles.logOutBtn}
+              onPress={() => navigation.navigate("Login")}
+            >
               <Feather name="log-out" size={24} color="#BDBDBD" />
             </TouchableOpacity>
             <View style={styles.imgBox}>
@@ -40,7 +46,11 @@ export const ProfileScreen = () => {
               </View>
               <View style={styles.box}>
                 <View style={styles.commentWrapper}>
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("Comments");
+                    }}
+                  >
                     <FontAwesome name="comment" size={24} color="#FF6C00" />
                   </TouchableOpacity>
                   <Text style={styles.commentsCount}>0</Text>

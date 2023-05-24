@@ -1,3 +1,4 @@
+import React from "react";
 import {
   View,
   Text,
@@ -8,10 +9,13 @@ import {
   Image,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import { styles } from "../styles/CommentsStyles";
 
 export const CommentsScreen = () => {
+  const navigation = useNavigation();
+
   const renderCommentItem = ({ item }) => (
     <View style={styles.commentContainer}>
       <Text style={styles.userName}>{item.userName}</Text>
@@ -24,6 +28,19 @@ export const CommentsScreen = () => {
     { userName: "User Name", commentText: "Comment text 2" },
     { userName: "User Name", commentText: "Comment text 3" },
   ];
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          style={{ marginLeft: 10 }}
+          onPress={() => navigation.goBack()}
+        >
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <View style={styles.container}>

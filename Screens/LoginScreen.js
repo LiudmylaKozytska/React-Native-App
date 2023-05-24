@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import { styles } from "../styles/LoginStyles";
 
@@ -20,7 +21,7 @@ const initialState = {
   password: "",
 };
 
-export const LoginScreen = ({ navigation }) => {
+export const LoginScreen = () => {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
@@ -28,6 +29,13 @@ export const LoginScreen = ({ navigation }) => {
     email: false,
     password: false,
   });
+  const navigation = useNavigation();
+
+  const touchWithoutSubmit = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    console.log(isShowKeyboard);
+  };
 
   const handleSubmit = () => {
     setIsShowKeyboard(false);
@@ -36,6 +44,7 @@ export const LoginScreen = ({ navigation }) => {
     console.log("User data:", state);
 
     setState(initialState);
+    navigation.navigate("Home");
   };
 
   const handleInputChange = (key, value) => {
@@ -50,7 +59,7 @@ export const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleSubmit}>
+    <TouchableWithoutFeedback onPress={touchWithoutSubmit}>
       <View style={styles.container}>
         <ImageBackground
           source={require("../assets/images/background_photo.jpg")}

@@ -31,6 +31,12 @@ export const RegistrationScreen = ({ navigation }) => {
     password: false,
   });
 
+  const touchWithoutSubmit = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    console.log(isShowKeyboard);
+  };
+
   const handleSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
@@ -38,6 +44,7 @@ export const RegistrationScreen = ({ navigation }) => {
     console.log("User data:", state);
 
     setState(initialState);
+    navigation.navigate("Home");
   };
 
   const handlePasswordVisibility = () => {
@@ -45,7 +52,7 @@ export const RegistrationScreen = ({ navigation }) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleSubmit}>
+    <TouchableWithoutFeedback onPress={touchWithoutSubmit}>
       <View style={styles.container}>
         <ImageBackground
           source={require("../assets/images/background_photo.jpg")}
