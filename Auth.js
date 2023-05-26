@@ -8,6 +8,7 @@ import { RegistrationScreen } from "./Screens/RegistrationScreen";
 import { PostsScreen } from "./Screens/PostsScreen";
 import { CreatePostScreen } from "./Screens/CreatePostsScreen";
 import { ProfileScreen } from "./Screens/ProfileScreen";
+import Home from "./Screens/Home";
 
 const AuthStack = createStackNavigator();
 
@@ -30,6 +31,13 @@ const AuthNavigator = () => {
           headerStyle: {
             height: 0,
           },
+        }}
+      />
+      <AuthStack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerShown: false,
         }}
       />
     </AuthStack.Navigator>

@@ -24,7 +24,7 @@ const initialState = {
 export const RegistrationScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [isShowPassword, setIsShowPassword] = useState(true);
+  const [isShowPassword, setIsShowPassword] = useState(false);
   const [isFocusInput, setIsFocusInput] = useState({
     userName: false,
     email: false,

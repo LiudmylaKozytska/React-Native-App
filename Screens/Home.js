@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { View, StyleSheet } from "react-native";
 
+import { MapScreen } from "./MapScreen";
 import { PostsScreen } from "./PostsScreen";
 import { CreatePostScreen } from "./CreatePostsScreen";
 import { ProfileScreen } from "./ProfileScreen";
@@ -25,14 +26,15 @@ const Home = () => {
       <Tab.Screen
         name="CreatePost"
         component={CreatePostScreen}
-        options={{
+        options={({ route }) => ({
           tabBarIcon: ({ color, size }) => (
             <View style={styles.btn}>
               <AntDesign name="plus" size={size} color={"#FFF"} />
             </View>
           ),
           tabBarLabel: "",
-        }}
+          tabBarVisible: route.name !== "CreatePost",
+        })}
       />
       <Tab.Screen
         name="Profile"
@@ -47,7 +49,18 @@ const Home = () => {
       <Tab.Screen
         name="Comments"
         component={CommentsScreen}
-        options={{ tabBarButton: () => null }}
+        options={{
+          tabBarButton: () => null,
+          tabBarVisible: () => false,
+        }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={MapScreen}
+        options={{
+          tabBarButton: () => null,
+          tabBarVisible: () => false,
+        }}
       />
     </Tab.Navigator>
   );

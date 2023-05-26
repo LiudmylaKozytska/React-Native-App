@@ -10,6 +10,8 @@ export const styles = StyleSheet.create({
   camera: {
     position: "relative",
     height: 240,
+    width: "100%",
+    // flex: 1,
     borderRadius: 9,
     marginTop: 32,
     alignItems: "center",
@@ -22,6 +24,7 @@ export const styles = StyleSheet.create({
     height: 240,
     width: "100%",
     borderRadius: 8,
+    borderColor: "#E8E8E8",
     backgroundColor: "#F6F6F6",
   },
 
@@ -36,7 +39,7 @@ export const styles = StyleSheet.create({
     borderRadius: 50,
     zIndex: 1,
 
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: "#FFFFFF",
   },
 
   text: {
