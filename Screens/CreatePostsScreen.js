@@ -11,12 +11,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
-import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-import * as Permissions from "expo-permissions";
 
 import { Feather, FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
 import { styles } from "../styles/CreatePostStyles";
+
+const apiKey = "pk.ac7a441bd462fa3aa0b8d5b701b6e8b1";
 
 export const CreatePostScreen = () => {
   const navigation = useNavigation();
@@ -48,15 +48,11 @@ export const CreatePostScreen = () => {
     const location = await Location.getCurrentPositionAsync({});
     const { latitude, longitude } = location.coords;
 
-    const apiKey = "pk.ac7a441bd462fa3aa0b8d5b701b6e8b1";
-
     const geocodeResponse = await fetch(
       `https://us1.locationiq.com/v1/reverse.php?key=${apiKey}&lat=${latitude}&lon=${longitude}&format=json`
     );
     const geocodeData = await geocodeResponse.json();
     const cityName = geocodeData.address.city_district;
-    console.log(geocodeData);
-    console.log(cityName);
 
     setLocation(cityName);
   };
@@ -69,15 +65,7 @@ export const CreatePostScreen = () => {
   };
 
   const handleLocationButtonPress = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Location permission not granted");
-      return;
-    }
     getLocation();
-    console.debug("Name:", name);
-    console.debug("Location:", location);
-    console.debug("Photo:", photo);
     navigation.navigate("Posts");
   };
 
