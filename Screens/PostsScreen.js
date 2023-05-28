@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { handleLogout } from "../redux/operations";
 
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { styles } from "../styles/PostsStyles";
@@ -16,7 +17,7 @@ export const PostsScreen = () => {
             name="log-out"
             size={24}
             color="#BDBDBD"
-            onPress={() => navigation.navigate("Login")}
+            onPress={handleLogout}
           />
         </View>
       ),
@@ -33,8 +34,8 @@ export const PostsScreen = () => {
           />
         </View>
         <View>
-          <Text style={styles.name}>Natali Romanova</Text>
-          <Text style={styles.email}>email@example.com</Text>
+          <Text style={styles.name}>{login}</Text>
+          <Text style={styles.email}>{userEmail}</Text>
         </View>
       </View>
       <View>

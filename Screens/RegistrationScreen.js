@@ -43,8 +43,10 @@ export const RegistrationScreen = ({ navigation }) => {
   const handleSubmit = async () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log("line-53", JSON.stringify(state));
-    console.log("line-54", state);
+
+    if (state.userName === "" || state.email === "" || state.password === "") {
+      return;
+    }
 
     dispatch(signUpUser(state));
     navigation.navigate("Home");

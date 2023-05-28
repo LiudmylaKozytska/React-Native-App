@@ -5,14 +5,18 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import { handleLogout } from "../redux/operations";
 
 import { Ionicons, FontAwesome, Feather } from "@expo/vector-icons";
+import { selectLogin } from "../redux/selectors";
 
 import { styles } from "../styles/ProfileStyles";
 
 export const ProfileScreen = () => {
   const navigation = useNavigation();
+  const login = useSelector(selectLogin);
 
   return (
     <View style={styles.container}>
@@ -22,10 +26,7 @@ export const ProfileScreen = () => {
       >
         <View style={styles.wrapper}>
           <View style={styles.userInfo}>
-            <TouchableOpacity
-              style={styles.logOutBtn}
-              onPress={() => navigation.navigate("Login")}
-            >
+            <TouchableOpacity style={styles.logOutBtn} onPress={handleLogout}>
               <Feather name="log-out" size={24} color="#BDBDBD" />
             </TouchableOpacity>
             <View style={styles.imgBox}>
@@ -35,7 +36,7 @@ export const ProfileScreen = () => {
               />
             </View>
             <View>
-              <Text style={styles.name}>Natali Romanova</Text>
+              <Text style={styles.name}>{login}</Text>
             </View>
           </View>
           <View style={styles.postsList}>

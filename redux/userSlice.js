@@ -9,14 +9,19 @@ export const userSlice = createSlice({
     stateChange: false,
   },
   reducers: {
-    updateUserProfile(state, { payload }) {
-      state.login = payload.login;
-      state.userId = payload.userId;
-      state.email = payload.email;
-    },
+    updateUserProfile: (state, { payload }) => ({
+      userId: payload.userId,
+      login: payload.login,
+      email: payload.email,
+    }),
+    loginUser: (state, { payload }) => ({
+      userId: payload.userId,
+      login: true,
+      email: payload.email,
+    }),
   },
 });
 
 export const user = userSlice.reducer;
 
-export const { updateUserProfile } = userSlice.actions;
+export const { updateUserProfile, loginUser } = userSlice.actions;
