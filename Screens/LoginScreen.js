@@ -72,7 +72,7 @@ export const LoginScreen = () => {
   };
 
   if (loggedIn) {
-    navigation.navigate("Posts");
+    navigation.navigate("Home");
   } else {
     return (
       <TouchableWithoutFeedback onPress={touchWithoutSubmit}>

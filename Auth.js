@@ -18,36 +18,31 @@ const AuthNavigator = () => {
 
   return (
     <AuthStack.Navigator initialRouteName="Registration">
-      {loggedIn ? (
-        <AuthStack.Screen
-          name="Home"
-          component={Home}
-          options={{
-            headerShown: false,
-          }}
-        />
-      ) : (
-        <>
-          <AuthStack.Screen
-            name="Registration"
-            component={RegistrationScreen}
-            options={{
-              headerStyle: {
-                height: 0,
-              },
-            }}
-          />
-          <AuthStack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{
-              headerStyle: {
-                height: 0,
-              },
-            }}
-          />
-        </>
-      )}
+      <AuthStack.Screen
+        name="Registration"
+        component={RegistrationScreen}
+        options={{
+          headerStyle: {
+            height: 0,
+          },
+        }}
+      />
+      <AuthStack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerStyle: {
+            height: 0,
+          },
+        }}
+      />
+      <AuthStack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerShown: false,
+        }}
+      />
     </AuthStack.Navigator>
   );
 };

@@ -2,12 +2,15 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { handleLogout } from "../redux/operations";
-
+import { useSelector } from "react-redux";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { styles } from "../styles/PostsStyles";
+import { selectLogin, selectUserEmail } from "../redux/selectors";
 
 export const PostsScreen = () => {
   const navigation = useNavigation();
+  const login = useSelector(selectLogin);
+  const userEmail = useSelector(selectUserEmail);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
