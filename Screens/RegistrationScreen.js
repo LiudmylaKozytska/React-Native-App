@@ -1,4 +1,8 @@
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../config";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+
 import {
   Text,
   View,
@@ -14,6 +18,8 @@ import {
 
 import { SubmitButton } from "../components/SubmitButton";
 import { styles } from "../styles/RegistrationStyles";
+import { authSignUpUser } from "../redux/operations";
+import { updateUserProfile } from "../redux/userSlice";
 
 const initialState = {
   userName: "",
@@ -22,6 +28,7 @@ const initialState = {
 };
 
 export const RegistrationScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
@@ -34,17 +41,40 @@ export const RegistrationScreen = ({ navigation }) => {
   const touchWithoutSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(isShowKeyboard);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+    console.log("line-53", JSON.stringify(state));
 
-    console.log("User data:", state);
+    try {
+      await createUserWithEmailAndPassword(auth, state.email, state.password);
+      await updateProfile(auth.currentUser, {
+        displayName: state.userName,
+        photoURL: "",
+      });
 
-    setState(initialState);
-    navigation.navigate("Home");
+      const { displayName, uid, email, photoURL } = auth.currentUser;
+
+      dispatch(
+        updateUserProfile({
+          login: displayName,
+          userId: uid,
+          email,
+        })
+      );
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+
+      console.log("errorCode - ", errorCode);
+      console.log("errorMessage - ", errorMessage);
+    }
+
+    // if (isLoggedIn) {
+    //   navigation.navigate("Home");
+    // }
   };
 
   const handlePasswordVisibility = () => {
