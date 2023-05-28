@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export const userSlice = createSlice({
-  name: "authReducer",
+  name: "user",
   initialState: {
     login: null,
     userId: null,
@@ -17,6 +17,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const authReducer = userSlice.reducer;
+export const user = userSlice.reducer;
 
 export const { updateUserProfile } = userSlice.actions;

@@ -1,24 +1,18 @@
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../config";
-import { updateUserProfile, authStateChange, authSignOut } from "./userSlice";
+import { useDispatch } from "react-redux";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, storage } from "../config";
+import { updateUserProfile } from "./userSlice";
 
 export const signUpUser =
   ({ login, email, password }) =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      await auth.currentUser;
+      const user = await auth.currentUser;
 
-      console.log("====================================");
-      console.log("auth.currentUser --->", auth.currentUser);
-      console.log("====================================");
+      console.log("auth.currentUser --->", user);
 
-      await updateProfile(auth.currentUser, {
-        displayName: login,
-        photoURL: "",
-      });
-
-      const { displayName, uid, email, photoURL } = await auth.currentUser;
+      const { displayName, uid, email } = await auth.currentUser;
 
       dispatch(
         updateUserProfile({
@@ -33,5 +27,6 @@ export const signUpUser =
 
       console.log("errorCode - ", errorCode);
       console.log("errorMessage - ", errorMessage);
+      console.log("getState - ", getState);
     }
   };

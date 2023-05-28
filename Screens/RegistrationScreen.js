@@ -1,5 +1,3 @@
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../config";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -18,8 +16,7 @@ import {
 
 import { SubmitButton } from "../components/SubmitButton";
 import { styles } from "../styles/RegistrationStyles";
-import { authSignUpUser } from "../redux/operations";
-import { updateUserProfile } from "../redux/userSlice";
+import { signUpUser } from "../redux/operations";
 
 const initialState = {
   userName: "",
@@ -47,34 +44,10 @@ export const RegistrationScreen = ({ navigation }) => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
     console.log("line-53", JSON.stringify(state));
+    console.log("line-54", state);
 
-    try {
-      await createUserWithEmailAndPassword(auth, state.email, state.password);
-      await updateProfile(auth.currentUser, {
-        displayName: state.userName,
-        photoURL: "",
-      });
-
-      const { displayName, uid, email, photoURL } = auth.currentUser;
-
-      dispatch(
-        updateUserProfile({
-          login: displayName,
-          userId: uid,
-          email,
-        })
-      );
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-
-      console.log("errorCode - ", errorCode);
-      console.log("errorMessage - ", errorMessage);
-    }
-
-    // if (isLoggedIn) {
-    //   navigation.navigate("Home");
-    // }
+    dispatch(signUpUser(state));
+    navigation.navigate("Home");
   };
 
   const handlePasswordVisibility = () => {
