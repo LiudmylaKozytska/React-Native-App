@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import * as ImagePicker from "expo-image-picker";
 
 import {
   Text,
@@ -22,6 +23,7 @@ const initialState = {
   userName: "",
   email: "",
   password: "",
+  userImage: "",
 };
 
 export const RegistrationScreen = ({ navigation }) => {
@@ -56,6 +58,18 @@ export const RegistrationScreen = ({ navigation }) => {
     setIsShowPassword(!isShowPassword);
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setState({ ...state, userImage: result.assets[0].uri });
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={touchWithoutSubmit}>
       <View style={styles.container}>
@@ -80,14 +94,28 @@ export const RegistrationScreen = ({ navigation }) => {
               }}
             >
               <View style={styles.addImageContainer}>
-                <TouchableOpacity style={styles.addPhotoBtn}>
+                {state.userImage && (
+                  <Image
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      resizeMode: "cover",
+                      borderRadius: 16,
+                    }}
+                    source={{ uri: state.userImage }}
+                  />
+                )}
+                <TouchableOpacity
+                  style={styles.addPhotoBtn}
+                  onPress={pickImage}
+                >
                   <Image
                     style={styles.addPhotoBtn}
                     source={require("../assets/images/add.png")}
                   />
                 </TouchableOpacity>
               </View>
-              <Text style={styles.formTitle}>Регистрация</Text>
+              <Text style={styles.formTitle}>Реєстрація</Text>
               <View style={styles.inputBox}>
                 <TextInput
                   style={{
@@ -98,7 +126,7 @@ export const RegistrationScreen = ({ navigation }) => {
                       : "#F6F6F6",
                   }}
                   placeholderTextColor={"#BDBDBD"}
-                  placeholder="Логин"
+                  placeholder="Логін"
                   onFocus={() =>
                     setIsFocusInput({ ...isFocusInput, userName: true })
                   }
@@ -120,7 +148,7 @@ export const RegistrationScreen = ({ navigation }) => {
                   }}
                   placeholderTextColor={"#BDBDBD"}
                   keyboardType="email-address"
-                  placeholder="Адрес электронной почты"
+                  placeholder="Адреса електронної пошти"
                   onFocus={() =>
                     setIsFocusInput({ ...isFocusInput, email: true })
                   }
@@ -160,19 +188,16 @@ export const RegistrationScreen = ({ navigation }) => {
                   onPress={handlePasswordVisibility}
                 >
                   <Text style={styles.showPasswordText}>
-                    {!isShowPassword ? "Показать" : "Скрыть"}
+                    {!isShowPassword ? "Показати" : "Приховати"}
                   </Text>
                 </TouchableOpacity>
               </View>
-              <SubmitButton
-                onPress={handleSubmit}
-                title={"Зарегистрироваться"}
-              />
+              <SubmitButton onPress={handleSubmit} title={"Зареєструватись"} />
               <Text
                 style={styles.registerText}
                 onPress={() => navigation.navigate("Login")}
               >
-                Уже есть аккаунт? Войти
+                Вже є акаунт? Увійти
               </Text>
             </View>
           </KeyboardAvoidingView>

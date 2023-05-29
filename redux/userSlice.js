@@ -6,6 +6,7 @@ export const userSlice = createSlice({
     login: null,
     userId: null,
     email: null,
+    image: null,
     stateChange: false,
   },
   reducers: {
@@ -13,6 +14,7 @@ export const userSlice = createSlice({
       userId: payload.userId,
       login: payload.login,
       email: payload.email,
+      image: payload.photoURL,
     }),
     loginUser: (state, { payload }) => ({
       userId: payload.userId,

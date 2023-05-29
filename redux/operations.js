@@ -8,7 +8,7 @@ import { db, auth } from "../config";
 import { updateUserProfile, loginUser, logoutUser } from "./userSlice";
 
 export const signUpUser =
-  ({ userName, email, password }) =>
+  ({ userName, email, password, image }) =>
   async (dispatch, getState) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -17,6 +17,7 @@ export const signUpUser =
 
       await updateProfile(user, {
         displayName: userName,
+        photoURL: image,
       });
 
       dispatch(
@@ -61,7 +62,7 @@ export const checkLoggedInUser = () => async (dispatch, getState) => {
           })
         );
       } else {
-        dispatch(logoutUser());
+        // dispatch(logoutUser());
       }
     });
   } catch (error) {

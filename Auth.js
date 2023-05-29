@@ -17,7 +17,7 @@ const AuthNavigator = () => {
   }, [dispatch]);
 
   return (
-    <AuthStack.Navigator initialRouteName="Registration">
+    <AuthStack.Navigator initialRouteName="Login">
       <AuthStack.Screen
         name="Registration"
         component={RegistrationScreen}
