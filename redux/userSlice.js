@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    login: null,
+    userName: null,
     userId: null,
     email: null,
     image: null,
@@ -12,9 +12,9 @@ export const userSlice = createSlice({
   reducers: {
     updateUserProfile: (state, { payload }) => ({
       userId: payload.userId,
-      login: payload.login,
+      userName: payload.userName,
       email: payload.email,
-      image: payload.photoURL,
+      image: payload.image,
     }),
     loginUser: (state, { payload }) => ({
       userId: payload.userId,
@@ -24,6 +24,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const user = userSlice.reducer;
+export const userReducer = userSlice.reducer;
 
 export const { updateUserProfile, loginUser } = userSlice.actions;

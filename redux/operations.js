@@ -4,12 +4,13 @@ import {
   updateProfile,
   onAuthStateChanged,
 } from "firebase/auth";
+import { collection, addDoc, userDocRef, updateDoc } from "firebase/firestore";
 import { db, auth } from "../config";
 import { updateUserProfile, loginUser, logoutUser } from "./userSlice";
 
 export const signUpUser =
-  ({ userName, email, password, image }) =>
-  async (dispatch, getState) => {
+  ({ userName, email, password }) =>
+  async (dispatch) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       const user = await auth.currentUser;
@@ -17,7 +18,6 @@ export const signUpUser =
 
       await updateProfile(user, {
         displayName: userName,
-        photoURL: image,
       });
 
       dispatch(
@@ -26,8 +26,17 @@ export const signUpUser =
           login: true,
           userName: userName,
           email: email,
+          image: user.photoURL,
         })
       );
+
+      const docRef = await addDoc(collection(db, "users"), {
+        userName: user.displayName,
+        stateChange: new Date(),
+        email: user.email,
+        id: user.uid,
+      });
+      console.log("Document written with ID: ", docRef.id);
     } catch (error) {
       console.log("error.message", error.message);
     }
@@ -89,5 +98,19 @@ export const uploadPhoto = async (userId, uri) => {
     console.log("URL фото:", downloadUrl);
   } catch (error) {
     console.log("Error:", error);
+  }
+};
+
+export const createPost = async (photoUri, name, location) => {
+  try {
+    const docRef = await addDoc(collection(db, "posts"), {
+      photoUri,
+      name,
+      // location,
+    });
+
+    console.log("Post created with ID:", docRef.id);
+  } catch (error) {
+    console.log("Error creating post:", error);
   }
 };

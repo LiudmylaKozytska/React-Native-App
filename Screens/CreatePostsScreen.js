@@ -12,7 +12,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
-
+import { createPost } from "../redux/operations";
 import { Feather, FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
 import { styles } from "../styles/CreatePostStyles";
 
@@ -38,34 +38,39 @@ export const CreatePostScreen = () => {
     });
   }, [navigation]);
 
-  const getLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Location permission not granted");
-      return;
-    }
+  // const getLocation = async () => {
+  //   const { status } = await Location.requestForegroundPermissionsAsync();
+  //   if (status !== "granted") {
+  //     console.log("Location permission not granted");
+  //     return;
+  //   }
 
-    const location = await Location.getCurrentPositionAsync({});
-    const { latitude, longitude } = location.coords;
+  //   const location = await Location.getCurrentPositionAsync({});
+  //   const { latitude, longitude } = location.coords;
 
-    const geocodeResponse = await fetch(
-      `https://us1.locationiq.com/v1/reverse.php?key=${apiKey}&lat=${latitude}&lon=${longitude}&format=json`
-    );
-    const geocodeData = await geocodeResponse.json();
-    const cityName = geocodeData.address.city_district;
+  //   const geocodeResponse = await fetch(
+  //     `https://us1.locationiq.com/v1/reverse.php?key=${apiKey}&lat=${latitude}&lon=${longitude}&format=json`
+  //   );
+  //   const geocodeData = await geocodeResponse.json();
+  //   const cityName = geocodeData.address.city_district;
 
-    setLocation(cityName);
-  };
+  //   setLocation(cityName);
+  // };
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
     console.log(photo);
-    getLocation();
+    // getLocation();
     setPhoto(photo.uri);
   };
 
   const handleLocationButtonPress = async () => {
-    getLocation();
+    // getLocation();
+    console.log("took location");
+  };
+
+  const handleSubmitPost = () => {
+    createPost(photo, name);
     navigation.navigate("Posts");
   };
 
@@ -101,7 +106,7 @@ export const CreatePostScreen = () => {
         <View>
           <TextInput
             placeholderTextColor="#BDBDBD"
-            placeholder="Название..."
+            placeholder="Назва..."
             style={styles.input}
             value={name}
             onChangeText={(value) => {
@@ -110,7 +115,7 @@ export const CreatePostScreen = () => {
           />
           <TextInput
             placeholderTextColor="#BDBDBD"
-            placeholder="Местность..."
+            placeholder="Місцевість..."
             style={styles.inputLocation}
             value={location}
             onChangeText={(value) => {
@@ -122,6 +127,7 @@ export const CreatePostScreen = () => {
             size={24}
             color="#BDBDBD"
             style={styles.locationBtn}
+            onPress={handleLocationButtonPress}
           />
         </View>
 
@@ -130,18 +136,18 @@ export const CreatePostScreen = () => {
           <TouchableOpacity
             style={styles.buttonActive}
             activeOpacity={0.8}
-            onPress={handleLocationButtonPress}
+            onPress={handleSubmitPost}
             debug
           >
-            <Text style={styles.buttonTextActive}>Опубликовать</Text>
+            <Text style={styles.buttonTextActive}>Публікувати</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={styles.button}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate("Posts")}
+            onPress={() => {}}
           >
-            <Text style={styles.buttonText}>Опубликовать</Text>
+            <Text style={styles.buttonText}>Публікувати</Text>
           </TouchableOpacity>
         )}
 

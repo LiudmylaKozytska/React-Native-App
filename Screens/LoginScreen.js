@@ -63,7 +63,6 @@ export const LoginScreen = () => {
       })
     );
 
-    setState(initialState);
     navigation.navigate("Home");
   };
 

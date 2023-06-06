@@ -47,6 +47,7 @@ export const RegistrationScreen = ({ navigation }) => {
     Keyboard.dismiss();
 
     if (state.userName === "" || state.email === "" || state.password === "") {
+      alert("Fill all fields please!!!");
       return;
     }
 
@@ -66,7 +67,10 @@ export const RegistrationScreen = ({ navigation }) => {
       quality: 1,
     });
     if (!result.canceled) {
-      setState({ ...state, userImage: result.assets[0].uri });
+      setState((prevState) => ({
+        ...prevState,
+        userImage: result.assets[0].uri,
+      }));
     }
   };
 

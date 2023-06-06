@@ -39,7 +39,7 @@ const Home = () => {
               </View>
             ),
             tabBarLabel: "",
-            tabBarVisible: route.name !== "CreatePost",
+            tabBarVisible: false,
           })}
         />
         <Tab.Screen
