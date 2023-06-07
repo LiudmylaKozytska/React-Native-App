@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,17 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-
+import { useDispatch, useSelector } from "react-redux";
+// import { addComment, fetchComments, selectComments } from "../redux/operations";
 import { styles } from "../styles/CommentsStyles";
 
 export const CommentsScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const comments = useSelector(selectComments);
+  const [commentText, setCommentText] = useState("");
+
+  const postId = "your_post_id";
 
   const renderCommentItem = ({ item }) => (
     <View style={styles.commentContainer}>
@@ -23,11 +29,16 @@ export const CommentsScreen = () => {
     </View>
   );
 
-  const commentsData = [
-    { userName: "User Name", commentText: "Comment text 1" },
-    { userName: "User Name", commentText: "Comment text 2" },
-    { userName: "User Name", commentText: "Comment text 3" },
-  ];
+  useEffect(() => {
+    dispatch(fetchComments(postId));
+  }, []);
+
+  const handleAddComment = () => {
+    if (commentText.trim() !== "") {
+      // dispatch(addComment({ postId, commentText }));
+      setCommentText("");
+    }
+  };
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -52,7 +63,7 @@ export const CommentsScreen = () => {
         />
         <SafeAreaView style={styles.wrapper}>
           <FlatList
-            data={commentsData}
+            data={comments}
             renderItem={renderCommentItem}
             keyExtractor={(item, index) => index.toString()}
           />
@@ -64,13 +75,13 @@ export const CommentsScreen = () => {
         placeholder="Комментировать..."
         style={styles.input}
         value=""
-        onChangeText={() => {}}
+        onChangeText={setCommentText}
       ></TextInput>
 
       <TouchableOpacity
         style={styles.button}
         activeOpacity={0.8}
-        onPress={() => {}}
+        onPress={handleAddComment}
       >
         <AntDesign name="arrowup" size={20} color="#FFFFFF" />
       </TouchableOpacity>

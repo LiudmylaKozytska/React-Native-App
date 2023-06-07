@@ -1,21 +1,28 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { handleLogout } from "../redux/operations";
-import { useSelector } from "react-redux";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { handleLogout, fetchPosts } from "../redux/operations";
+import { useSelector, useDispatch } from "react-redux";
+import { Feather } from "@expo/vector-icons";
+import PostItem from "../components/PostItem";
 import { styles } from "../styles/PostsStyles";
-import {
-  selectLogin,
-  selectUserEmail,
-  selectUserAvatar,
-} from "../redux/selectors";
+import { selectLogin, selectUserEmail } from "../redux/selectors";
 
 export const PostsScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const login = useSelector(selectLogin);
   const userEmail = useSelector(selectUserEmail);
-  const avatar = useSelector(selectUserAvatar);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      const fetchedPosts = await fetchPosts();
+      setPosts(fetchedPosts);
+    };
+
+    loadPosts();
+  }, []);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -25,54 +32,29 @@ export const PostsScreen = () => {
             name="log-out"
             size={24}
             color="#BDBDBD"
-            onPress={handleLogout}
+            onPress={() => handleLogout(dispatch, navigation)}
           />
         </View>
       ),
     });
   }, [navigation]);
-  console.log(avatar);
 
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
         <View style={styles.imgBox}>
-          <Image style={styles.avatar} source={{ uri: avatar }} />
+          {/* <Image style={styles.avatar} source={{ uri: avatar }} /> */}
         </View>
         <View>
           <Text style={styles.name}>{login}</Text>
           <Text style={styles.email}>{userEmail}</Text>
         </View>
       </View>
-      <View>
-        <Image source={{}} style={styles.post} />
-
-        <View>
-          <Text style={styles.title}>Comment</Text>
-        </View>
-        <View style={styles.box}>
-          <View style={styles.commentWrapper}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Comments");
-              }}
-            >
-              <Feather name="message-circle" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-            <Text style={styles.commentsCount}>0</Text>
-          </View>
-
-          <TouchableOpacity
-            style={styles.wrapperLocation}
-            onPress={() => {
-              navigation.navigate("Map");
-            }}
-          >
-            <Ionicons name="location-outline" size={24} color="#BDBDBD" />
-            <Text style={styles.locationName}>Location</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <FlatList
+        data={posts}
+        renderItem={({ item }) => <PostItem key={item.id} item={item} />}
+        keyExtractor={(item) => item.id}
+      ></FlatList>
     </View>
   );
 };

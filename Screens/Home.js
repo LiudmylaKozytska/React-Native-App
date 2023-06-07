@@ -32,7 +32,7 @@ const Home = () => {
         <Tab.Screen
           name="CreatePost"
           component={CreatePostScreen}
-          options={({ route }) => ({
+          options={{
             tabBarIcon: ({ color, size }) => (
               <View style={styles.btn}>
                 <AntDesign name="plus" size={size} color={"#FFF"} />
@@ -40,7 +40,7 @@ const Home = () => {
             ),
             tabBarLabel: "",
             tabBarVisible: false,
-          })}
+          }}
         />
         <Tab.Screen
           name="Profile"
@@ -57,7 +57,7 @@ const Home = () => {
           component={CommentsScreen}
           options={{
             tabBarButton: () => null,
-            tabBarVisible: () => false,
+            tabBarVisible: false,
           }}
         />
         <Tab.Screen
@@ -65,7 +65,7 @@ const Home = () => {
           component={MapScreen}
           options={{
             tabBarButton: () => null,
-            tabBarVisible: () => false,
+            tabBarVisible: false,
           }}
         />
       </Tab.Navigator>

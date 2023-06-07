@@ -10,7 +10,6 @@ const AuthStack = createStackNavigator();
 
 const AuthNavigator = () => {
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.loggedIn);
 
   useEffect(() => {
     dispatch(checkLoggedInUser());

@@ -13,7 +13,7 @@ import {
 import { selectIsLoggedIn } from "../redux/selectors";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { signInUser } from "../redux/operations";
+import { signInUser, getUserProfile } from "../redux/operations";
 import { styles } from "../styles/LoginStyles";
 
 import { SubmitButton } from "../components/SubmitButton";
@@ -37,7 +37,7 @@ export const LoginScreen = () => {
 
   useEffect(() => {
     if (loggedIn) {
-      console.log(loggedIn);
+      dispatch(getUserProfile());
       navigation.navigate("Home");
     }
   }, []);
@@ -45,7 +45,6 @@ export const LoginScreen = () => {
   const touchWithoutSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(isShowKeyboard);
   };
 
   const handleSubmit = () => {
@@ -62,7 +61,6 @@ export const LoginScreen = () => {
         password: state.password,
       })
     );
-
     navigation.navigate("Home");
   };
 

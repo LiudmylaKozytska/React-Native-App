@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   },
 
   wrapper: {
-    marginTop: 147,
+    marginTop: 250,
     paddingHorizontal: 16,
 
     borderTopRightRadius: 25,
@@ -63,9 +63,7 @@ export const styles = StyleSheet.create({
     color: "#212121",
   },
 
-  postsList: {
-    marginBottom: 120,
-  },
+  postsList: {},
 
   post: {
     height: 240,

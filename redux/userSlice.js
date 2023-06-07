@@ -4,20 +4,20 @@ export const userSlice = createSlice({
   name: "user",
   initialState: {
     userName: null,
-    userId: null,
+    uid: null,
     email: null,
     image: null,
     stateChange: false,
   },
   reducers: {
     updateUserProfile: (state, { payload }) => ({
-      userId: payload.userId,
+      uid: payload.uid,
       userName: payload.userName,
       email: payload.email,
       image: payload.image,
     }),
     loginUser: (state, { payload }) => ({
-      userId: payload.userId,
+      uid: payload.uid,
       login: true,
       email: payload.email,
     }),

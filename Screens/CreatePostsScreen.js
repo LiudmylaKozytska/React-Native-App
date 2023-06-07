@@ -64,10 +64,10 @@ export const CreatePostScreen = () => {
     setPhoto(photo.uri);
   };
 
-  const handleLocationButtonPress = async () => {
-    // getLocation();
-    console.log("took location");
-  };
+  // const handleLocationButtonPress = async () => {
+  //   // getLocation();
+  //   console.log("took location");
+  // };
 
   const handleSubmitPost = () => {
     createPost(photo, name);
@@ -122,13 +122,13 @@ export const CreatePostScreen = () => {
               setLocation(value);
             }}
           />
-          <Ionicons
+          {/* <Ionicons
             name="location-outline"
             size={24}
             color="#BDBDBD"
             style={styles.locationBtn}
             onPress={handleLocationButtonPress}
-          />
+          /> */}
         </View>
 
         <View style={styles.tabBarWrapper} />
