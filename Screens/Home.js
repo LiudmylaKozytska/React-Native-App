@@ -1,7 +1,9 @@
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { View, StyleSheet } from "react-native";
+import { checkLoggedInUser } from "../redux/operations";
 import { selectIsLoggedIn } from "../redux/selectors";
 
 import { MapScreen } from "./MapScreen";
@@ -15,6 +17,11 @@ const Tab = createBottomTabNavigator();
 
 const Home = () => {
   const loggedIn = useSelector(selectIsLoggedIn);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkLoggedInUser());
+  }, [dispatch]);
 
   if (loggedIn) {
     return (
