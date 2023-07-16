@@ -1,40 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { handleLogout, fetchPosts } from "../redux/operations";
+import { handleLogout } from "../redux/auth/authOperations";
+// import { fetchPosts } from "../redux/operations";
 import { useSelector, useDispatch } from "react-redux";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { styles } from "../styles/PostsStyles";
 import {
+  selectUserPhoto,
   selectLogin,
   selectUserEmail,
-  selectIsLoggedIn,
-} from "../redux/selectors";
-import { checkLoggedInUser } from "../redux/operations";
+} from "../redux/auth/selectors";
 
 export const PostsScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const login = useSelector(selectLogin);
   const userEmail = useSelector(selectUserEmail);
+  const userPhoto = useSelector(selectUserPhoto);
   const [posts, setPosts] = useState([]);
-  const loggedIn = useSelector(selectIsLoggedIn);
 
-  useEffect(() => {
-    dispatch(checkLoggedInUser());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const loadPosts = async () => {
+  //     const fetchedPosts = await fetchPosts(posts);
+  //     setPosts(fetchedPosts);
+  //   };
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      const fetchedPosts = await fetchPosts();
-      console.log("fetched posts in posts screen -->", fetchedPosts);
-      if (fetchedPosts) {
-        setPosts(fetchedPosts);
-      }
-    };
-
-    loadPosts();
-  }, []);
+  //   loadPosts();
+  // }, []);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -44,12 +37,15 @@ export const PostsScreen = () => {
             name="log-out"
             size={24}
             color="#BDBDBD"
-            onPress={() => handleLogout(dispatch, navigation)}
+            onPress={() => {
+              dispatch(handleLogout());
+              navigation.navigate("Login");
+            }}
           />
         </View>
       ),
     });
-  }, [navigation]);
+  }, [dispatch, navigation]);
 
   const PostItem = ({ item }) => {
     return (
@@ -88,18 +84,18 @@ export const PostsScreen = () => {
     <View style={styles.container}>
       <View style={styles.userInfo}>
         <View style={styles.imgBox}>
-          {/* <Image style={styles.avatar} source={{ uri: avatar }} /> */}
+          <Image style={styles.avatar} source={{ uri: userPhoto }} />
         </View>
         <View>
           <Text style={styles.name}>{login}</Text>
           <Text style={styles.email}>{userEmail}</Text>
         </View>
       </View>
-      <FlatList
+      {/* <FlatList
         data={posts}
         renderItem={({ item }) => <PostItem key={item.id} item={item} />}
         keyExtractor={(item) => item.id}
-      ></FlatList>
+      ></FlatList> */}
     </View>
   );
 };

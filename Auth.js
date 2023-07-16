@@ -1,22 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useDispatch, useSelector } from "react-redux";
-import { checkLoggedInUser } from "./redux/operations";
-import { LoginScreen } from "./Screens/LoginScreen";
-import { RegistrationScreen } from "./Screens/RegistrationScreen";
-import Home from "./Screens/Home";
+
+import LoginScreen from "./src/Screens/LoginScreen";
+import RegistrationScreen from "./src/Screens/RegistrationScreen";
+import Home from "./src/Screens/Home";
 
 const AuthStack = createStackNavigator();
 
 const AuthNavigator = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(checkLoggedInUser());
-  }, [dispatch]);
-
   return (
-    <AuthStack.Navigator initialRouteName="Login">
+    <AuthStack.Navigator initialRouteName="Registration">
       <AuthStack.Screen
         name="Registration"
         component={RegistrationScreen}

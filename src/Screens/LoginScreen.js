@@ -10,65 +10,64 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { selectIsLoggedIn } from "../redux/selectors";
-import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { signInUser, getUserProfile } from "../redux/operations";
+import { signInUser } from "../redux/auth/authOperations";
+import { selectIsAuth } from "../redux/auth/selectors";
 import { styles } from "../styles/LoginStyles";
 
 import { SubmitButton } from "../components/SubmitButton";
 
-const initialState = {
-  email: "",
-  password: "",
-};
+const LoginScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const loggedIn = useSelector(selectIsAuth);
 
-export const LoginScreen = () => {
-  const [state, setState] = useState(initialState);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(true);
   const [isFocusInput, setIsFocusInput] = useState({
     email: false,
     password: false,
   });
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const loggedIn = useSelector(selectIsLoggedIn);
 
   useEffect(() => {
     if (loggedIn) {
-      dispatch(getUserProfile());
       navigation.navigate("Home");
     }
-  }, []);
+  }, [loggedIn, navigation]);
 
   const touchWithoutSubmit = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
 
-  const handleSubmit = () => {
+  const handleEmail = (text) => {
+    setEmail(text.trim());
+  };
+  const handlePassword = (text) => {
+    setPassword(text.trim());
+  };
+
+  const handleSubmit = async () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
 
-    if (state.email === "" || state.password === "") {
+    if (email === "" || password === "") {
       return;
     }
 
-    dispatch(
-      signInUser({
-        email: state.email,
-        password: state.password,
-      })
-    );
-    navigation.navigate("Home");
-  };
-
-  const handleInputChange = (key, value) => {
-    setState((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
+    try {
+      const signInResult = await dispatch(signInUser({ email, password }));
+      if (signInResult.type === "auth/signInUser/fulfilled") {
+        navigation.navigate("Home");
+      } else {
+        console.log("signInResult.type", signInResult.type);
+        alert("Failed signIn!!!");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Error sign in user!");
+    }
   };
 
   const handlePasswordVisibility = () => {
@@ -79,7 +78,7 @@ export const LoginScreen = () => {
     <TouchableWithoutFeedback onPress={touchWithoutSubmit}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../assets/images/background_photo.jpg")}
+          source={require("../../assets/images/background_photo.jpg")}
           style={styles.backgroundImage}
         >
           <KeyboardAvoidingView
@@ -112,8 +111,8 @@ export const LoginScreen = () => {
                   onBlur={() =>
                     setIsFocusInput({ ...isFocusInput, email: false })
                   }
-                  value={state.email}
-                  onChangeText={(text) => setState({ ...state, email: text })}
+                  value={email}
+                  onChangeText={handleEmail}
                 />
               </View>
               <View style={styles.inputBox}>
@@ -135,8 +134,8 @@ export const LoginScreen = () => {
                   onBlur={() =>
                     setIsFocusInput({ ...isFocusInput, password: false })
                   }
-                  value={state.password}
-                  onChangeText={(value) => handleInputChange("password", value)}
+                  value={password}
+                  onChangeText={handlePassword}
                 />
 
                 <TouchableOpacity
@@ -163,3 +162,5 @@ export const LoginScreen = () => {
     </TouchableWithoutFeedback>
   );
 };
+
+export default LoginScreen;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 
@@ -14,21 +14,17 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-
+import { signUpUser } from "../redux/auth/authOperations";
+import { addPhoto } from "../redux/storage";
 import { SubmitButton } from "../components/SubmitButton";
 import { styles } from "../styles/RegistrationStyles";
-import { signUpUser } from "../redux/operations";
 
-const initialState = {
-  userName: "",
-  email: "",
-  password: "",
-  userImage: "",
-};
-
-export const RegistrationScreen = ({ navigation }) => {
+const RegistrationScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [state, setState] = useState(initialState);
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [photo, setPhoto] = useState(null);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isFocusInput, setIsFocusInput] = useState({
@@ -36,6 +32,16 @@ export const RegistrationScreen = ({ navigation }) => {
     email: false,
     password: false,
   });
+
+  const handleLogin = (text) => {
+    setLogin(text.trim());
+  };
+  const handleEmail = (text) => {
+    setEmail(text.trim());
+  };
+  const handlePassword = (text) => {
+    setPassword(text.trim());
+  };
 
   const touchWithoutSubmit = () => {
     setIsShowKeyboard(false);
@@ -46,13 +52,35 @@ export const RegistrationScreen = ({ navigation }) => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
 
-    if (state.userName === "" || state.email === "" || state.password === "") {
+    if (login === "" || email === "" || password === "") {
       alert("Fill all fields please!!!");
       return;
     }
 
-    dispatch(signUpUser(state));
-    navigation.navigate("Home");
+    try {
+      let photoURL = null;
+      if (photo) {
+        const photoResult = await dispatch(addPhoto(photo));
+        if (photoResult.type === "storage/addPhoto/fulfilled") {
+          photoURL = photoResult.payload;
+        } else {
+          alert("Error uploading photo!!!");
+          return;
+        }
+      }
+
+      const signUpResult = await dispatch(
+        signUpUser({ email, password, login, photo: photoURL })
+      );
+      if (signUpResult.type === "auth/signUpUser/fulfilled") {
+        navigation.navigate("Home");
+      } else {
+        alert("Incorrect registration!!!");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Error creating user!");
+    }
   };
 
   const handlePasswordVisibility = () => {
@@ -67,10 +95,16 @@ export const RegistrationScreen = ({ navigation }) => {
       quality: 1,
     });
     if (!result.canceled) {
-      setState((prevState) => ({
-        ...prevState,
-        userImage: result.assets[0].uri,
-      }));
+      const { assets } = result;
+      const selectedImage = assets[0];
+      const { uri } = selectedImage;
+      setPhoto(uri);
+      dispatch(addPhoto(uri)).then((result) => {
+        if (result.type !== "storage/addPhoto/fulfilled") {
+          alert("Error uploading photo!!!");
+          setPhoto(null);
+        }
+      });
     }
   };
 
@@ -78,7 +112,7 @@ export const RegistrationScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={touchWithoutSubmit}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../assets/images/background_photo.jpg")}
+          source={require("../../assets/images/background_photo.jpg")}
           style={styles.backgroundImage}
         >
           <KeyboardAvoidingView
@@ -98,7 +132,7 @@ export const RegistrationScreen = ({ navigation }) => {
               }}
             >
               <View style={styles.addImageContainer}>
-                {state.userImage && (
+                {photo && (
                   <Image
                     style={{
                       width: "100%",
@@ -106,7 +140,7 @@ export const RegistrationScreen = ({ navigation }) => {
                       resizeMode: "cover",
                       borderRadius: 16,
                     }}
-                    source={{ uri: state.userImage }}
+                    source={{ uri: `${photo}` }}
                   />
                 )}
                 <TouchableOpacity
@@ -115,7 +149,7 @@ export const RegistrationScreen = ({ navigation }) => {
                 >
                   <Image
                     style={styles.addPhotoBtn}
-                    source={require("../assets/images/add.png")}
+                    source={require("../../assets/images/add.png")}
                   />
                 </TouchableOpacity>
               </View>
@@ -137,10 +171,8 @@ export const RegistrationScreen = ({ navigation }) => {
                   onBlur={() =>
                     setIsFocusInput({ ...isFocusInput, userName: false })
                   }
-                  value={state.userName}
-                  onChangeText={(text) =>
-                    setState({ ...state, userName: text })
-                  }
+                  value={login}
+                  onChangeText={handleLogin}
                 />
               </View>
               <View style={styles.inputBox}>
@@ -159,8 +191,8 @@ export const RegistrationScreen = ({ navigation }) => {
                   onBlur={() =>
                     setIsFocusInput({ ...isFocusInput, email: false })
                   }
-                  value={state.email}
-                  onChangeText={(text) => setState({ ...state, email: text })}
+                  value={email}
+                  onChangeText={handleEmail}
                 />
               </View>
               <View style={styles.inputBox}>
@@ -182,10 +214,8 @@ export const RegistrationScreen = ({ navigation }) => {
                   onBlur={() =>
                     setIsFocusInput({ ...isFocusInput, password: false })
                   }
-                  value={state.password}
-                  onChangeText={(text) =>
-                    setState({ ...state, password: text })
-                  }
+                  value={password}
+                  onChangeText={handlePassword}
                 />
                 <TouchableOpacity
                   style={styles.showPasswordContainer}
@@ -210,3 +240,5 @@ export const RegistrationScreen = ({ navigation }) => {
     </TouchableWithoutFeedback>
   );
 };
+
+export default RegistrationScreen;

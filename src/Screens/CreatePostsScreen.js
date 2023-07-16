@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import {
   TouchableOpacity,
   View,
@@ -9,21 +9,26 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
-import { createPost } from "../redux/operations";
+import { useDispatch, useSelector } from "react-redux";
+
+import { selectUserId } from "../redux/auth/selectors";
+import { addPost } from "../redux/posts/postsOperations";
+import { addPhoto } from "../redux/storage";
+
 import { Feather, FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
 import { styles } from "../styles/CreatePostStyles";
 
-const apiKey = "pk.ac7a441bd462fa3aa0b8d5b701b6e8b1";
+export const CreatePostScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
 
-export const CreatePostScreen = () => {
-  const navigation = useNavigation();
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
-  const [name, setName] = useState("");
   const [location, setLocation] = useState("");
+  const [name, setName] = useState("");
+
+  const uid = useSelector(selectUserId);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -38,39 +43,31 @@ export const CreatePostScreen = () => {
     });
   }, [navigation]);
 
-  // const getLocation = async () => {
-  //   const { status } = await Location.requestForegroundPermissionsAsync();
-  //   if (status !== "granted") {
-  //     console.log("Location permission not granted");
-  //     return;
-  //   }
+  useEffect(() => {
+    async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Location permission not granted");
+        return;
+      }
 
-  //   const location = await Location.getCurrentPositionAsync({});
-  //   const { latitude, longitude } = location.coords;
+      const location = await Location.getCurrentPositionAsync({});
+      const coords = location.coords;
 
-  //   const geocodeResponse = await fetch(
-  //     `https://us1.locationiq.com/v1/reverse.php?key=${apiKey}&lat=${latitude}&lon=${longitude}&format=json`
-  //   );
-  //   const geocodeData = await geocodeResponse.json();
-  //   const cityName = geocodeData.address.city_district;
+      console.log("location", location);
+      const geocodeResponse = await Location.reverseGeocodeAsync(coords);
 
-  //   setLocation(cityName);
-  // };
+      setLocation(geocodeResponse);
+    };
+  }, []);
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
-    console.log(photo);
-    // getLocation();
     setPhoto(photo.uri);
   };
 
-  // const handleLocationButtonPress = async () => {
-  //   // getLocation();
-  //   console.log("took location");
-  // };
-
-  const handleSubmitPost = () => {
-    createPost(photo, name);
+  const handleSubmitPost = async () => {
+    await dispatch(addPost({ photo, name, location }));
     navigation.navigate("Posts");
   };
 
@@ -90,7 +87,7 @@ export const CreatePostScreen = () => {
               />
             </View>
           )}
-          <TouchableOpacity style={styles.icon} onPress={takePhoto}>
+          <TouchableOpacity style={styles.icon} onPress={() => takePhoto()}>
             <FontAwesome
               name="camera"
               size={20}
@@ -100,7 +97,7 @@ export const CreatePostScreen = () => {
         </Camera>
 
         <Text style={styles.text}>
-          {photo ? "Редактировать фото" : "Загрузите фото"}
+          {photo ? "Редагувати фото" : "Загрузити фото"}
         </Text>
 
         <View>
@@ -110,7 +107,7 @@ export const CreatePostScreen = () => {
             style={styles.input}
             value={name}
             onChangeText={(value) => {
-              setName(value);
+              setName(value.trim());
             }}
           />
           <TextInput
@@ -119,16 +116,15 @@ export const CreatePostScreen = () => {
             style={styles.inputLocation}
             value={location}
             onChangeText={(value) => {
-              setLocation(value);
+              setLocation(value.trim());
             }}
           />
-          {/* <Ionicons
+          <Ionicons
             name="location-outline"
             size={24}
             color="#BDBDBD"
             style={styles.locationBtn}
-            onPress={handleLocationButtonPress}
-          /> */}
+          />
         </View>
 
         <View style={styles.tabBarWrapper} />

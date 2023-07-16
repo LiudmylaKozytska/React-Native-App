@@ -11,7 +11,8 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-// import { addComment, fetchComments, selectComments } from "../redux/operations";
+import { addComment, fetchComments } from "../redux/operations";
+import { selectComments } from "../redux/selectors";
 import { styles } from "../styles/CommentsStyles";
 
 export const CommentsScreen = () => {
@@ -35,7 +36,7 @@ export const CommentsScreen = () => {
 
   const handleAddComment = () => {
     if (commentText.trim() !== "") {
-      // dispatch(addComment({ postId, commentText }));
+      dispatch(addComment({ postId, comment: commentText }));
       setCommentText("");
     }
   };
@@ -57,7 +58,7 @@ export const CommentsScreen = () => {
     <View style={styles.container}>
       <View>
         <Image
-          source={require("../assets/images/CommentsImage.jpg")}
+          source={require("../../assets/images/CommentsImage.jpg")}
           style={styles.post}
           alt="Image"
         />
@@ -65,7 +66,7 @@ export const CommentsScreen = () => {
           <FlatList
             data={comments}
             renderItem={renderCommentItem}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item) => item.id}
           />
         </SafeAreaView>
       </View>
@@ -74,7 +75,7 @@ export const CommentsScreen = () => {
         placeholderTextColor={"#BDBDBD"}
         placeholder="Комментировать..."
         style={styles.input}
-        value=""
+        value={commentText}
         onChangeText={setCommentText}
       ></TextInput>
 
