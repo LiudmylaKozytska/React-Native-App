@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { View, StyleSheet } from "react-native";
-import { checkLoggedInUser } from "../redux/operations";
-// import { selectIsLoggedIn } from "../redux/selectors";
 
 import { MapScreen } from "./MapScreen";
 import { PostsScreen } from "./PostsScreen";

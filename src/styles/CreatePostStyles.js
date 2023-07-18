@@ -126,7 +126,7 @@ export const styles = StyleSheet.create({
     width: 70,
     height: 40,
 
-    marginTop: 120,
+    marginTop: 20,
     marginLeft: "auto",
     marginRight: "auto",
     justifyContent: "center",

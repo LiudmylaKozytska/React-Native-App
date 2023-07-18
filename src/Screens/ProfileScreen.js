@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   View,
   Image,
@@ -9,9 +9,10 @@ import {
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { handleLogout } from "../redux/auth/authOperations";
 
 import { Ionicons, FontAwesome, Feather } from "@expo/vector-icons";
+import { handleLogout } from "../redux/auth/authOperations";
+import { selectUserPosts } from "../redux/posts/selectors";
 import { selectUserPhoto, selectLogin } from "../redux/auth/selectors";
 
 import { styles } from "../styles/ProfileStyles";
@@ -21,40 +22,24 @@ export const ProfileScreen = () => {
   const dispatch = useDispatch();
   const login = useSelector(selectLogin);
   const userPhoto = useSelector(selectUserPhoto);
-  const [posts, setPosts] = useState([]);
-
-  // useEffect(() => {
-  //   const loadPosts = async () => {
-  //     const fetchedPosts = await fetchPosts();
-  //     setPosts(fetchedPosts);
-  //     console.log("fetch profile screen", posts);
-  //   };
-
-  //   loadPosts();
-  // }, []);
-
-  // useEffect(() => {
-  //   const loadPosts = async () => {
-  //     const fetchedPosts = await fetchPosts(posts);
-  //     setPosts(fetchedPosts);
-  //   };
-
-  //   loadPosts();
-  // }, [posts]);
+  const posts = useSelector(selectUserPosts);
 
   const PostItem = ({ item }) => {
     return (
       <View style={styles.postsList}>
-        <Image source={{ uri: item.photoUri }} style={styles.post} />
+        <Image source={{ uri: item.photo }} style={styles.post} />
         <View>
           <Text style={styles.title}>{item.name}</Text>
         </View>
         <View style={styles.box}>
           <View style={styles.commentWrapper}>
             <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Comments");
-              }}
+              onPress={() =>
+                navigation.navigate("Comments", {
+                  postId: item.id,
+                  postImg: item.photo,
+                })
+              }
             >
               <FontAwesome name="comment" size={24} color="#FF6C00" />
             </TouchableOpacity>

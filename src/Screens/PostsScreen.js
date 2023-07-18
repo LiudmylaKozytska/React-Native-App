@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { handleLogout } from "../redux/auth/authOperations";
-// import { fetchPosts } from "../redux/operations";
 import { useSelector, useDispatch } from "react-redux";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { styles } from "../styles/PostsStyles";
@@ -11,6 +9,9 @@ import {
   selectLogin,
   selectUserEmail,
 } from "../redux/auth/selectors";
+import { selectAllPosts } from "../redux/posts/selectors";
+import { handleLogout } from "../redux/auth/authOperations";
+import { getPosts } from "../redux/posts/postsOperations";
 
 export const PostsScreen = () => {
   const navigation = useNavigation();
@@ -18,16 +19,7 @@ export const PostsScreen = () => {
   const login = useSelector(selectLogin);
   const userEmail = useSelector(selectUserEmail);
   const userPhoto = useSelector(selectUserPhoto);
-  const [posts, setPosts] = useState([]);
-
-  // useEffect(() => {
-  //   const loadPosts = async () => {
-  //     const fetchedPosts = await fetchPosts(posts);
-  //     setPosts(fetchedPosts);
-  //   };
-
-  //   loadPosts();
-  // }, []);
+  const posts = useSelector(selectAllPosts);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -47,10 +39,14 @@ export const PostsScreen = () => {
     });
   }, [dispatch, navigation]);
 
+  useEffect(() => {
+    dispatch(getPosts());
+  }, [dispatch]);
+
   const PostItem = ({ item }) => {
     return (
       <View>
-        <Image source={{ uri: item.photoUri }} style={styles.post} />
+        <Image source={{ uri: item.photo }} style={styles.post} />
         <View>
           <Text style={styles.title}>{item.name}</Text>
         </View>
@@ -58,7 +54,10 @@ export const PostsScreen = () => {
           <View style={styles.commentWrapper}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Comments");
+                navigation.navigate("Comments", {
+                  postId: item.id,
+                  postImg: item.photo,
+                });
               }}
             >
               <Feather name="message-circle" size={24} color="#BDBDBD" />
@@ -91,11 +90,11 @@ export const PostsScreen = () => {
           <Text style={styles.email}>{userEmail}</Text>
         </View>
       </View>
-      {/* <FlatList
+      <FlatList
         data={posts}
         renderItem={({ item }) => <PostItem key={item.id} item={item} />}
         keyExtractor={(item) => item.id}
-      ></FlatList> */}
+      ></FlatList>
     </View>
   );
 };

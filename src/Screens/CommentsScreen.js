@@ -11,17 +11,24 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { addComment, fetchComments } from "../redux/operations";
-import { selectComments } from "../redux/selectors";
+import {
+  addComment,
+  getAllComments,
+} from "../redux/comments/commentOperations";
+import { selectComments } from "../redux/comments/selectors";
 import { styles } from "../styles/CommentsStyles";
 
-export const CommentsScreen = () => {
+export const CommentsScreen = ({ route }) => {
+  const { postId, postImg } = route.params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const comments = useSelector(selectComments);
+  const postComments = comments.filter((item) => item.postId === postId);
   const [commentText, setCommentText] = useState("");
 
-  const postId = "your_post_id";
+  useEffect(() => {
+    dispatch(getAllComments());
+  }, []);
 
   const renderCommentItem = ({ item }) => (
     <View style={styles.commentContainer}>
@@ -29,10 +36,6 @@ export const CommentsScreen = () => {
       <Text>{item.commentText}</Text>
     </View>
   );
-
-  useEffect(() => {
-    dispatch(fetchComments(postId));
-  }, []);
 
   const handleAddComment = () => {
     if (commentText.trim() !== "") {
@@ -57,14 +60,10 @@ export const CommentsScreen = () => {
   return (
     <View style={styles.container}>
       <View>
-        <Image
-          source={require("../../assets/images/CommentsImage.jpg")}
-          style={styles.post}
-          alt="Image"
-        />
+        <Image source={{ uri: `${postImg}` }} style={styles.post} />
         <SafeAreaView style={styles.wrapper}>
           <FlatList
-            data={comments}
+            data={postComments}
             renderItem={renderCommentItem}
             keyExtractor={(item) => item.id}
           />

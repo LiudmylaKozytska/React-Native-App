@@ -44,30 +44,44 @@ export const CreatePostScreen = ({ navigation }) => {
   }, [navigation]);
 
   useEffect(() => {
-    async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Location permission not granted");
-        return;
-      }
-
-      const location = await Location.getCurrentPositionAsync({});
-      const coords = location.coords;
-
-      console.log("location", location);
-      const geocodeResponse = await Location.reverseGeocodeAsync(coords);
-
-      setLocation(geocodeResponse);
-    };
+    (async () => {
+      await Camera.requestCameraPermissionsAsync();
+    })();
   }, []);
 
+  const getLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Location permission not granted");
+      return;
+    }
+
+    const location = await Location.getCurrentPositionAsync({});
+    const coords = location.coords;
+
+    console.log("location", location);
+    const geocodeResponse = await Location.reverseGeocodeAsync(coords);
+    const city = geocodeResponse[0]?.city ?? "";
+    const country = geocodeResponse[0]?.country ?? "";
+    const currentLocation = `${city}, ${country}`;
+    setLocation(currentLocation);
+  };
+
   const takePhoto = async () => {
+    await Camera.requestCameraPermissionsAsync();
     const photo = await camera.takePictureAsync();
     setPhoto(photo.uri);
   };
 
   const handleSubmitPost = async () => {
-    await dispatch(addPost({ photo, name, location }));
+    if (!name || !photo) {
+      alert("Add photo and name!");
+      return;
+    }
+    const addPhotoToStorage = await dispatch(addPhoto(photo));
+    await dispatch(
+      addPost({ photo: addPhotoToStorage.payload, name, location, uid })
+    );
     navigation.navigate("Posts");
   };
 
@@ -124,6 +138,9 @@ export const CreatePostScreen = ({ navigation }) => {
             size={24}
             color="#BDBDBD"
             style={styles.locationBtn}
+            onPress={() => {
+              getLocation();
+            }}
           />
         </View>
 
@@ -154,6 +171,7 @@ export const CreatePostScreen = ({ navigation }) => {
             setPhoto(null);
             setLocation("");
             setName("");
+            takePhoto();
           }}
           disabled={!photo && !location && !name}
         >
