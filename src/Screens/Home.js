@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { View, StyleSheet } from "react-native";
@@ -9,18 +8,10 @@ import { PostsScreen } from "./PostsScreen";
 import { CreatePostScreen } from "./CreatePostsScreen";
 import { ProfileScreen } from "./ProfileScreen";
 import { CommentsScreen } from "./CommentsScreen";
-import { LoginScreen } from "./LoginScreen";
 
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
-  // const loggedIn = useSelector(selectIsLoggedIn);
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(checkLoggedInUser());
-  // }, [dispatch]);
-
   return (
     <Tab.Navigator>
       <Tab.Screen

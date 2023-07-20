@@ -10,6 +10,7 @@ import {
   selectUserEmail,
 } from "../redux/auth/selectors";
 import { selectAllPosts } from "../redux/posts/selectors";
+import { selectComments } from "../redux/comments/selectors";
 import { handleLogout } from "../redux/auth/authOperations";
 import { getPosts } from "../redux/posts/postsOperations";
 
@@ -20,6 +21,12 @@ export const PostsScreen = () => {
   const userEmail = useSelector(selectUserEmail);
   const userPhoto = useSelector(selectUserPhoto);
   const posts = useSelector(selectAllPosts);
+  const comments = useSelector(selectComments);
+
+  const commentsCount = (id) => {
+    const comment = comments.filter((item) => item.postId === id).length;
+    return comment;
+  };
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -30,8 +37,8 @@ export const PostsScreen = () => {
             size={24}
             color="#BDBDBD"
             onPress={() => {
-              dispatch(handleLogout());
               navigation.navigate("Login");
+              dispatch(handleLogout());
             }}
           />
         </View>
@@ -62,7 +69,7 @@ export const PostsScreen = () => {
             >
               <Feather name="message-circle" size={24} color="#BDBDBD" />
             </TouchableOpacity>
-            <Text style={styles.commentsCount}>0</Text>
+            <Text style={styles.commentsCount}>{commentsCount(item.id)}</Text>
           </View>
 
           <TouchableOpacity
@@ -72,7 +79,7 @@ export const PostsScreen = () => {
             }}
           >
             <Ionicons name="location-outline" size={24} color="#BDBDBD" />
-            <Text style={styles.locationName}>Location</Text>
+            <Text style={styles.locationName}>{item.location}</Text>
           </TouchableOpacity>
         </View>
       </View>

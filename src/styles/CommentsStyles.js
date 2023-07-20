@@ -28,12 +28,15 @@ export const styles = StyleSheet.create({
     borderColor: "rgba(0, 0, 0, 0.03)",
   },
 
-  userName: {
-    // fontFamily: "RobotoRegular",
-    fontStyle: "normal",
-    fontSize: 13,
-    lineHeight: 18,
-    color: "#BDBDBD",
+  avatarContainer: {
+    borderRadius: 50,
+  },
+
+  avatar: {
+    width: 40,
+    height: 40,
+    margin: 0,
+    padding: 0,
   },
 
   input: {

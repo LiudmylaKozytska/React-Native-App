@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons, FontAwesome, Feather } from "@expo/vector-icons";
 import { handleLogout } from "../redux/auth/authOperations";
 import { selectUserPosts } from "../redux/posts/selectors";
+import { selectComments } from "../redux/comments/selectors";
 import { selectUserPhoto, selectLogin } from "../redux/auth/selectors";
 
 import { styles } from "../styles/ProfileStyles";
@@ -23,6 +24,12 @@ export const ProfileScreen = () => {
   const login = useSelector(selectLogin);
   const userPhoto = useSelector(selectUserPhoto);
   const posts = useSelector(selectUserPosts);
+  const comments = useSelector(selectComments);
+
+  const commentsCount = (id) => {
+    const comment = comments.filter((item) => item.postId === id).length;
+    return comment;
+  };
 
   const PostItem = ({ item }) => {
     return (
@@ -43,7 +50,7 @@ export const ProfileScreen = () => {
             >
               <FontAwesome name="comment" size={24} color="#FF6C00" />
             </TouchableOpacity>
-            <Text style={styles.commentsCount}>0</Text>
+            <Text style={styles.commentsCount}>{commentsCount(item.id)}</Text>
           </View>
 
           <View style={styles.wrapperLocation}>
@@ -51,7 +58,7 @@ export const ProfileScreen = () => {
               <Ionicons name="location-outline" size={24} color="#BDBDBD" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {}}>
-              <Text style={styles.locationName}>Location</Text>
+              <Text style={styles.locationName}>{item.location}</Text>
             </TouchableOpacity>
           </View>
         </View>

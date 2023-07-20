@@ -45,9 +45,10 @@ export const CreatePostScreen = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
+      console.log("camera permission");
       await Camera.requestCameraPermissionsAsync();
     })();
-  }, []);
+  }, [navigation]);
 
   const getLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -59,7 +60,6 @@ export const CreatePostScreen = ({ navigation }) => {
     const location = await Location.getCurrentPositionAsync({});
     const coords = location.coords;
 
-    console.log("location", location);
     const geocodeResponse = await Location.reverseGeocodeAsync(coords);
     const city = geocodeResponse[0]?.city ?? "";
     const country = geocodeResponse[0]?.country ?? "";
@@ -69,7 +69,7 @@ export const CreatePostScreen = ({ navigation }) => {
 
   const takePhoto = async () => {
     await Camera.requestCameraPermissionsAsync();
-    const photo = await camera.takePictureAsync();
+    const photo = await camera.takePictureAsync({});
     setPhoto(photo.uri);
   };
 
@@ -83,6 +83,10 @@ export const CreatePostScreen = ({ navigation }) => {
       addPost({ photo: addPhotoToStorage.payload, name, location, uid })
     );
     navigation.navigate("Posts");
+    setPhoto(null);
+    setLocation("");
+    setName("");
+    takePhoto();
   };
 
   return (
@@ -97,7 +101,7 @@ export const CreatePostScreen = ({ navigation }) => {
             <View style={styles.previewPhoto}>
               <Image
                 source={{ uri: photo }}
-                style={{ height: 240, width: "100%" }}
+                style={{ height: "100%", width: "100%" }}
               />
             </View>
           )}
@@ -121,7 +125,7 @@ export const CreatePostScreen = ({ navigation }) => {
             style={styles.input}
             value={name}
             onChangeText={(value) => {
-              setName(value.trim());
+              setName(value);
             }}
           />
           <TextInput

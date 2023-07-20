@@ -15,25 +15,39 @@ import {
   addComment,
   getAllComments,
 } from "../redux/comments/commentOperations";
-import { selectComments } from "../redux/comments/selectors";
+import { selectUser, selectUserPhoto } from "../redux/auth/selectors";
 import { styles } from "../styles/CommentsStyles";
 
 export const CommentsScreen = ({ route }) => {
   const { postId, postImg } = route.params;
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const comments = useSelector(selectComments);
-  const postComments = comments.filter((item) => item.postId === postId);
   const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState([]);
+  const userAvatar = useSelector(selectUserPhoto);
+  let filteredComments = [];
 
   useEffect(() => {
-    dispatch(getAllComments());
+    const fetchComments = async () => {
+      const commentsResult = await dispatch(getAllComments());
+      setComments(commentsResult.payload);
+    };
+    fetchComments();
   }, []);
+
+  if (comments) {
+    console.log("comments filtered ------>", comments);
+    filteredComments = comments.filter((item) => item.postId === postId);
+  } else {
+    return;
+  }
 
   const renderCommentItem = ({ item }) => (
     <View style={styles.commentContainer}>
-      <Text style={styles.userName}>{item.userName}</Text>
-      <Text>{item.commentText}</Text>
+      <View style={styles.avatarContainer}>
+        <Image source={{ uri: userAvatar }} style={styles.avatar} />
+      </View>
+      <Text>{item.comment}</Text>
     </View>
   );
 
@@ -63,10 +77,10 @@ export const CommentsScreen = ({ route }) => {
         <Image source={{ uri: `${postImg}` }} style={styles.post} />
         <SafeAreaView style={styles.wrapper}>
           <FlatList
-            data={postComments}
+            data={filteredComments}
             renderItem={renderCommentItem}
             keyExtractor={(item) => item.id}
-          />
+          ></FlatList>
         </SafeAreaView>
       </View>
 
