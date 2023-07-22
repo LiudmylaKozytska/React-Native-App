@@ -11,11 +11,10 @@ export const addComment = createAsyncThunk(
         ...data,
       });
 
-      const commentsSnapshot = await getDoc(collection(db, "comments"));
+      const commentsSnapshot = await getDocs(collection(db, "comments"));
 
       const comments = [];
-
-      commentsSnapshot.map((doc) => {
+      commentsSnapshot.forEach((doc) => {
         comments.push({ id: doc.id, ...doc.data() });
       });
 

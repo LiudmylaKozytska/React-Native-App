@@ -15,32 +15,48 @@ import {
   addComment,
   getAllComments,
 } from "../redux/comments/commentOperations";
-import { selectUser, selectUserPhoto } from "../redux/auth/selectors";
+import { getPosts } from "../redux/posts/postsOperations";
+import {
+  selectUser,
+  selectUserId,
+  selectUserPhoto,
+} from "../redux/auth/selectors";
 import { styles } from "../styles/CommentsStyles";
 
 export const CommentsScreen = ({ route }) => {
-  const { postId, postImg } = route.params;
-  const navigation = useNavigation();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const { postId, postImg } = route.params;
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState([]);
   const userAvatar = useSelector(selectUserPhoto);
-  let filteredComments = [];
+  const userId = useSelector(selectUserId);
 
   useEffect(() => {
-    const fetchComments = async () => {
-      const commentsResult = await dispatch(getAllComments());
-      setComments(commentsResult.payload);
-    };
     fetchComments();
-  }, []);
+  }, [dispatch, postId]);
 
-  if (comments) {
-    console.log("comments filtered ------>", comments);
-    filteredComments = comments.filter((item) => item.postId === postId);
-  } else {
-    return;
-  }
+  const fetchComments = async () => {
+    try {
+      const commentsResult = await dispatch(getAllComments());
+      if (commentsResult.payload) {
+        setComments(
+          commentsResult.payload.filter((item) => item.postId === postId)
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  const handleAddComment = () => {
+    if (commentText.trim()) {
+      dispatch(
+        addComment({ postId, comment: commentText, userId, userAvatar })
+      );
+      setCommentText("");
+    }
+  };
 
   const renderCommentItem = ({ item }) => (
     <View style={styles.commentContainer}>
@@ -50,13 +66,6 @@ export const CommentsScreen = ({ route }) => {
       <Text>{item.comment}</Text>
     </View>
   );
-
-  const handleAddComment = () => {
-    if (commentText.trim() !== "") {
-      dispatch(addComment({ postId, comment: commentText }));
-      setCommentText("");
-    }
-  };
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -77,7 +86,7 @@ export const CommentsScreen = ({ route }) => {
         <Image source={{ uri: `${postImg}` }} style={styles.post} />
         <SafeAreaView style={styles.wrapper}>
           <FlatList
-            data={filteredComments}
+            data={comments}
             renderItem={renderCommentItem}
             keyExtractor={(item) => item.id}
           ></FlatList>

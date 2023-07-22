@@ -12,9 +12,13 @@ import { useNavigation } from "@react-navigation/native";
 
 import { Ionicons, FontAwesome, Feather } from "@expo/vector-icons";
 import { handleLogout } from "../redux/auth/authOperations";
-import { selectUserPosts } from "../redux/posts/selectors";
+import { selectAllPosts } from "../redux/posts/selectors";
 import { selectComments } from "../redux/comments/selectors";
-import { selectUserPhoto, selectLogin } from "../redux/auth/selectors";
+import {
+  selectUserPhoto,
+  selectLogin,
+  selectUserId,
+} from "../redux/auth/selectors";
 
 import { styles } from "../styles/ProfileStyles";
 
@@ -23,8 +27,11 @@ export const ProfileScreen = () => {
   const dispatch = useDispatch();
   const login = useSelector(selectLogin);
   const userPhoto = useSelector(selectUserPhoto);
-  const posts = useSelector(selectUserPosts);
+  const posts = useSelector(selectAllPosts);
   const comments = useSelector(selectComments);
+  const userId = useSelector(selectUserId);
+
+  const userPosts = posts.filter((item) => item.uid === userId);
 
   const commentsCount = (id) => {
     const comment = comments.filter((item) => item.postId === id).length;
@@ -91,7 +98,7 @@ export const ProfileScreen = () => {
             </View>
           </View>
           <FlatList
-            data={posts}
+            data={userPosts}
             renderItem={({ item }) => <PostItem key={item.id} item={item} />}
             keyExtractor={(item) => item.id}
           ></FlatList>

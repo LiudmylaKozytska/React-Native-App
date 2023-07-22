@@ -24,8 +24,10 @@ export const PostsScreen = () => {
   const comments = useSelector(selectComments);
 
   const commentsCount = (id) => {
-    const comment = comments.filter((item) => item.postId === id).length;
-    return comment;
+    const postComments = comments.filter((item) => item.postId === id);
+    if (postComments.length > 0) {
+    }
+    return postComments.length;
   };
 
   React.useLayoutEffect(() => {
